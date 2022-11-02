@@ -23,10 +23,10 @@ public class Player : MonoBehaviour
     void Move()
     {
         // 移動可能な範囲
-        float x0 = -3;
-        float x1 = x0 + 6;
-        float z0 = 0;
-        float z1 = z0 + 10;
+        const float x0 = -3;
+        const float x1 = x0 + 6;
+        const float z0 = 0;
+        const float z1 = z0 + 10;
 
         float moveSpeed = 3 * Time.deltaTime;
 

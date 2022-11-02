@@ -28,4 +28,23 @@ public class Bullet : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        bool destory = false;
+        
+        if (tag == "PlayerBullet" && other.tag == "Enemy")
+        {
+            destory = true;
+        }
+        else if (tag == "EnemyBullet" && other.tag == "Player")
+        {
+            destory = true;
+        }
+
+        if (destory)
+        {
+            Destroy(gameObject);
+        }
+    }
 }
