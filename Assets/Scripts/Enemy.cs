@@ -16,11 +16,14 @@ public class Enemy : MonoBehaviour
     MovePattern _movePattern;
     int _physicalStrength;
     float _elapsedTimeForShooting = 0;
+    bool _damaged = false;
+    SpriteRenderer _spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
         _appearTime = Time.time;
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -28,6 +31,12 @@ public class Enemy : MonoBehaviour
     {
         Move();
         ShootBullet();
+
+        if (_damaged)
+        {
+            float level = Mathf.Abs(Mathf.Sin(Time.time * 10));
+            _spriteRenderer.color = new Color(1f, 1f, 1f, level);
+        }
     }
 
     public void Set(Vector3 position, MovePattern movePattern, int physicalStrength)
@@ -91,11 +100,21 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
+            _damaged = true;
+            StartCoroutine("WaitAndBack");
+
             --_physicalStrength;
             if (_physicalStrength <= 0)
             {
                 Destroy(gameObject);
             }
         }
+    }
+
+    IEnumerator WaitAndBack()
+    {
+        yield return new WaitForSeconds(1);
+        _damaged = false;
+        _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 }

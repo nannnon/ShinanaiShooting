@@ -25,10 +25,18 @@ public class GameController : MonoBehaviour
 
         if (_elapsedTime >= 3)
         {
-            GameObject go = Instantiate(_enemy1Prefab);
-            Enemy e = go.GetComponent<Enemy>();
-            Vector3 pos = new Vector3(-2, 0, 12);
-            e.Set(pos, Enemy.MovePattern.AppearAndShootAndBye, 1);
+            {
+                GameObject go = Instantiate(_enemy1Prefab);
+                Enemy e = go.GetComponent<Enemy>();
+                Vector3 pos = new Vector3(-2, 0, 12);
+                e.Set(pos, Enemy.MovePattern.AppearAndShootAndBye, 1);
+            }
+            {
+                GameObject go = Instantiate(_enemy2Prefab);
+                Enemy e = go.GetComponent<Enemy>();
+                Vector3 pos = new Vector3(2, 0, 12);
+                e.Set(pos, Enemy.MovePattern.AppearAndShootAndBye, 5);
+            }
 
             _elapsedTime = 0;
         }
