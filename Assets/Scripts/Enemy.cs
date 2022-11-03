@@ -9,7 +9,8 @@ public class Enemy : MonoBehaviour
 
     public enum MovePattern
     {
-        AppearAndShootAndBye
+        AppearAndShootAndBye,
+        GoThrough
     }
 
     float _appearTime;
@@ -49,26 +50,32 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         float elapsedTime = Time.time - _appearTime;
+        float moveSpeed = 3 * Time.deltaTime;
 
         if (_movePattern == MovePattern.AppearAndShootAndBye)
         {
             if (elapsedTime < 2)
             {
-                Vector3 t = new Vector3(0, 0, -3 * Time.deltaTime);
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
                 transform.Translate(t, Space.World);
             }
             else if (5 <= elapsedTime)
             {
-                Vector3 t = new Vector3(0, 0, +3 * Time.deltaTime);
+                Vector3 t = new Vector3(0, 0, moveSpeed);
                 transform.Translate(t, Space.World);
             }
         }
+        else if (_movePattern == MovePattern.GoThrough)
+        {
+            Vector3 t = new Vector3(0, 0, -moveSpeed);
+            transform.Translate(t, Space.World);
+        }
 
         // 画面外の特定範囲まで移動したら削除
-        const float x0 = -4;
-        const float x1 = 4;
-        const float z0 = -2;
-        const float z1 = 13;
+        const float x0 = -5;
+        const float x1 = +5;
+        const float z0 = -3;
+        const float z1 = 14;
         if (transform.position.x < x0 ||
             transform.position.x > x1 ||
             transform.position.z < z0 ||
