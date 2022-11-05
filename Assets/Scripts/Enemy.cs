@@ -32,13 +32,17 @@ public class Enemy : MonoBehaviour
         ToPlayer,
     }
 
+    float _moveSpeedCoef;
     MovePattern _movePattern;
     ShootPattern _shootPattern;
-    float _shootingCycle;
+    float _timeToStartShooting;
+    float _shootingCycleTime;
+    float _bulletSpeed;
     int _physicalStrength;
 
     MoveState _moveState = MoveState.State0;
     float _timeForMoving;
+    float _appearTime;
     float _timeForShooting = 0;
     bool _damaged = false;
     SpriteRenderer _spriteRenderer;
@@ -47,8 +51,9 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        _appearTime = Time.time;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _player = GameObject.Find("Player");
+        _player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
@@ -64,18 +69,21 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Set(Vector3 position, MovePattern movePattern, ShootPattern shootPattern, float shootingCycle, int physicalStrength)
+    public void Set(Vector3 position, float moveSpeedCoef, MovePattern movePattern, ShootPattern shootPattern, float timeToStartShooting, float shootingCycleTime, float bulletSpeed, int physicalStrength)
     {
         transform.position = position;
+        _moveSpeedCoef = moveSpeedCoef;
         _movePattern = movePattern;
         _shootPattern = shootPattern;
-        _shootingCycle = shootingCycle;
+        _timeToStartShooting = timeToStartShooting;
+        _shootingCycleTime = shootingCycleTime;
+        _bulletSpeed = bulletSpeed;
         _physicalStrength = physicalStrength;
     }
 
     void Move()
     {
-        float moveSpeed = 3 * Time.deltaTime;
+        float moveSpeed = _moveSpeedCoef * Time.deltaTime;
         float x0 = GameController.ScreenPoint0.x;
         float x1 = GameController.ScreenPoint1.x;
         float z0 = GameController.ScreenPoint0.z;
@@ -251,20 +259,19 @@ public class Enemy : MonoBehaviour
 
     void ShootBullet()
     {
+        float elapsedTime = Time.time - _appearTime;
         _timeForShooting += Time.deltaTime;
 
-        if (_timeForShooting >= _shootingCycle)
+        if (elapsedTime >= _timeToStartShooting && _timeForShooting >= _shootingCycleTime)
         {
-            const float bulletSpeed = 5f;
-
             if (_shootPattern == ShootPattern.Straight)
             {
-                GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -bulletSpeed));
+                GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -_bulletSpeed));
             }
             else if (_shootPattern == ShootPattern.Random)
             {
                 float theta = Random.Range(0, 2 * Mathf.PI);
-                Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
+                Vector3 vel = new Vector3(_bulletSpeed * Mathf.Cos(theta), 0, _bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
             }
             else if (_shootPattern == ShootPattern.ToPlayer)
@@ -272,7 +279,7 @@ public class Enemy : MonoBehaviour
                 float dx = _player.transform.position.x - transform.position.x;
                 float dz = _player.transform.position.z - transform.position.z;
                 float theta = Mathf.Atan2(dz, dx);
-                Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
+                Vector3 vel = new Vector3(_bulletSpeed * Mathf.Cos(theta), 0, _bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
             }
 
