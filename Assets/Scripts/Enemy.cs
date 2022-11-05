@@ -25,19 +25,30 @@ public class Enemy : MonoBehaviour
         State2,
         State3,
     }
+    public enum ShootPattern
+    {
+        Straight,
+        Random,
+        ToPlayer,
+    }
 
     MovePattern _movePattern;
+    ShootPattern _shootPattern;
+    float _shootingCycle;
     int _physicalStrength;
+
     MoveState _moveState = MoveState.State0;
     float _timeForMoving;
     float _timeForShooting = 0;
     bool _damaged = false;
     SpriteRenderer _spriteRenderer;
+    GameObject _player;
 
     // Start is called before the first frame update
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
@@ -53,10 +64,12 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void Set(Vector3 position, MovePattern movePattern, int physicalStrength)
+    public void Set(Vector3 position, MovePattern movePattern, ShootPattern shootPattern, float shootingCycle, int physicalStrength)
     {
         transform.position = position;
         _movePattern = movePattern;
+        _shootPattern = shootPattern;
+        _shootingCycle = shootingCycle;
         _physicalStrength = physicalStrength;
     }
 
@@ -239,19 +252,40 @@ public class Enemy : MonoBehaviour
     void ShootBullet()
     {
         _timeForShooting += Time.deltaTime;
-        const float shootingCycle = 1.2f;
 
-        if (_timeForShooting >= shootingCycle)
+        if (_timeForShooting >= _shootingCycle)
         {
-            // 弾を発射
-            GameObject go = Instantiate(_enemyBulletPrefab);
-            Bullet b = go.GetComponent<Bullet>();
-            Vector3 pos = transform.position + new Vector3(0, 0, -0.5f);
-            Vector3 vel = new Vector3(0, 0, -5f);
-            b.Set(pos, vel);
+            const float bulletSpeed = 5f;
+
+            if (_shootPattern == ShootPattern.Straight)
+            {
+                GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -bulletSpeed));
+            }
+            else if (_shootPattern == ShootPattern.Random)
+            {
+                float theta = Random.Range(0, 2 * Mathf.PI);
+                Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
+                GenerateBullet(Vector3.zero, vel);
+            }
+            else if (_shootPattern == ShootPattern.ToPlayer)
+            {
+                float dx = _player.transform.position.x - transform.position.x;
+                float dz = _player.transform.position.z - transform.position.z;
+                float theta = Mathf.Atan2(dz, dx);
+                Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
+                GenerateBullet(Vector3.zero, vel);
+            }
 
             _timeForShooting = 0;
         }
+    }
+
+    void GenerateBullet(Vector3 relativePos, Vector3 vel)
+    {
+        GameObject go = Instantiate(_enemyBulletPrefab);
+        Bullet b = go.GetComponent<Bullet>();
+        Vector3 pos = transform.position + relativePos;
+        b.Set(pos, vel);
     }
 
     void OnTriggerEnter(Collider other)
