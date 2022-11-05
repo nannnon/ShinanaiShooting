@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
+    public static readonly Vector3 ScreenPoint0 = new Vector3(-3, 0, 0);
+    public static readonly Vector3 ScreenPoint1 = new Vector3(+3, 0, 10);
+
     [SerializeField]
     GameObject _enemy1Prefab;
     [SerializeField]
@@ -25,18 +28,10 @@ public class GameController : MonoBehaviour
 
         if (_elapsedTime >= 3)
         {
-            {
-                GameObject go = Instantiate(_enemy1Prefab);
-                Enemy e = go.GetComponent<Enemy>();
-                Vector3 pos = new Vector3(-2, 0, 12);
-                e.Set(pos, Enemy.MovePattern.AppearAndShootAndBye, 1);
-            }
-            {
-                GameObject go = Instantiate(_enemy2Prefab);
-                Enemy e = go.GetComponent<Enemy>();
-                Vector3 pos = new Vector3(2, 0, 12);
-                e.Set(pos, Enemy.MovePattern.AppearAndShootAndBye, 5);
-            }
+            GameObject go = Instantiate(_enemy2Prefab);
+            Enemy e = go.GetComponent<Enemy>();
+            Vector3 pos = new Vector3(2, 0, 12);
+            e.Set(pos, Enemy.MovePattern.UFromRight, 5);
 
             _elapsedTime = 0;
         }

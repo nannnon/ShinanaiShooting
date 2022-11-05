@@ -10,20 +10,33 @@ public class Enemy : MonoBehaviour
     public enum MovePattern
     {
         AppearAndShootAndBye,
-        GoThrough
+        GoThrough,
+        SouthWest,
+        SouthEast,
+        UFromLeft,
+        UFromRight,
+        NInvert,
+        N,
+    }
+    enum MoveState
+    {
+        State0,
+        State1,
+        State2,
+        State3,
     }
 
-    float _appearTime;
     MovePattern _movePattern;
     int _physicalStrength;
-    float _elapsedTimeForShooting = 0;
+    MoveState _moveState = MoveState.State0;
+    float _timeForMoving;
+    float _timeForShooting = 0;
     bool _damaged = false;
     SpriteRenderer _spriteRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        _appearTime = Time.time;
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
@@ -49,17 +62,33 @@ public class Enemy : MonoBehaviour
 
     void Move()
     {
-        float elapsedTime = Time.time - _appearTime;
         float moveSpeed = 3 * Time.deltaTime;
+        float x0 = GameController.ScreenPoint0.x;
+        float x1 = GameController.ScreenPoint1.x;
+        float z0 = GameController.ScreenPoint0.z;
+        float z1 = GameController.ScreenPoint1.z;
 
         if (_movePattern == MovePattern.AppearAndShootAndBye)
         {
-            if (elapsedTime < 2)
+            if (_moveState == MoveState.State0)
             {
                 Vector3 t = new Vector3(0, 0, -moveSpeed);
                 transform.Translate(t, Space.World);
+
+                if (transform.position.z <= z1)
+                {
+                    _timeForMoving = Time.time;
+                    _moveState = MoveState.State1;
+                }
             }
-            else if (5 <= elapsedTime)
+            else if (_moveState == MoveState.State1)
+            {
+                if (Time.time - _timeForMoving > 5)
+                {
+                    _moveState = MoveState.State2;
+                }
+            }
+            else if (_moveState == MoveState.State2)
             {
                 Vector3 t = new Vector3(0, 0, moveSpeed);
                 transform.Translate(t, Space.World);
@@ -70,16 +99,86 @@ public class Enemy : MonoBehaviour
             Vector3 t = new Vector3(0, 0, -moveSpeed);
             transform.Translate(t, Space.World);
         }
+        else if (_movePattern == MovePattern.SouthWest)
+        {
+            const float theta = 3 * Mathf.PI / 2 - Mathf.PI / 8;
+            Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
+            transform.Translate(t, Space.World);
+        }
+        else if (_movePattern == MovePattern.SouthEast)
+        {
+            const float theta = 3 * Mathf.PI / 2 + Mathf.PI / 8;
+            Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
+            transform.Translate(t, Space.World);
+        }
+        else if (_movePattern == MovePattern.UFromLeft)
+        {
+            if (_moveState == MoveState.State0)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.z <= z1 - (z1 - z0) / 2)
+                {
+                    _moveState = MoveState.State1;
+                }
+            }
+            else if (_moveState == MoveState.State1)
+            {
+                Vector3 t = new Vector3(moveSpeed, 0, 0);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.x >= 2)
+                {
+                    _moveState = MoveState.State2;
+                }
+            }
+            else if (_moveState == MoveState.State2)
+            {
+                Vector3 t = new Vector3(0, 0, moveSpeed);
+                transform.Translate(t, Space.World);
+            }
+        }
+        else if (_movePattern == MovePattern.UFromRight)
+        {
+            if (_moveState == MoveState.State0)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.z <= z1 - (z1 - z0) / 2)
+                {
+                    _moveState = MoveState.State1;
+                }
+            }
+            else if (_moveState == MoveState.State1)
+            {
+                Vector3 t = new Vector3(-moveSpeed, 0, 0);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.x <= -2)
+                {
+                    _moveState = MoveState.State2;
+                }
+            }
+            else if (_moveState == MoveState.State2)
+            {
+                Vector3 t = new Vector3(0, 0, moveSpeed);
+                transform.Translate(t, Space.World);
+            }
+        }
+        else if (_movePattern == MovePattern.NInvert)
+        {
+        }
+        else if (_movePattern == MovePattern.N)
+        {
+        }
 
         // 画面外の特定範囲まで移動したら削除
-        const float x0 = -5;
-        const float x1 = +5;
-        const float z0 = -3;
-        const float z1 = 14;
-        if (transform.position.x < x0 ||
-            transform.position.x > x1 ||
-            transform.position.z < z0 ||
-            transform.position.z > z1 )
+        if (transform.position.x < -5 ||
+            transform.position.x > +5 ||
+            transform.position.z < -3 ||
+            transform.position.z > 14 )
         {
             Destroy(gameObject);
         }
@@ -87,10 +186,10 @@ public class Enemy : MonoBehaviour
 
     void ShootBullet()
     {
-        _elapsedTimeForShooting += Time.deltaTime;
+        _timeForShooting += Time.deltaTime;
         const float shootingCycle = 1.2f;
 
-        if (_elapsedTimeForShooting >= shootingCycle)
+        if (_timeForShooting >= shootingCycle)
         {
             // 弾を発射
             GameObject go = Instantiate(_enemyBulletPrefab);
@@ -99,7 +198,7 @@ public class Enemy : MonoBehaviour
             Vector3 vel = new Vector3(0, 0, -5f);
             b.Set(pos, vel);
 
-            _elapsedTimeForShooting = 0;
+            _timeForShooting = 0;
         }
     }
 
