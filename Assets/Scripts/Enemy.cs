@@ -128,7 +128,7 @@ public class Enemy : MonoBehaviour
                 Vector3 t = new Vector3(moveSpeed, 0, 0);
                 transform.Translate(t, Space.World);
 
-                if (transform.position.x >= 2)
+                if (transform.position.x >= x1 - 1)
                 {
                     _moveState = MoveState.State2;
                 }
@@ -156,7 +156,7 @@ public class Enemy : MonoBehaviour
                 Vector3 t = new Vector3(-moveSpeed, 0, 0);
                 transform.Translate(t, Space.World);
 
-                if (transform.position.x <= -2)
+                if (transform.position.x <= x0 + 1)
                 {
                     _moveState = MoveState.State2;
                 }
@@ -169,16 +169,68 @@ public class Enemy : MonoBehaviour
         }
         else if (_movePattern == MovePattern.NInvert)
         {
+            if (_moveState == MoveState.State0)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.z <= z1 - (z1 - z0) * 8 / 10)
+                {
+                    _moveState = MoveState.State1;
+                }
+            }
+            else if (_moveState == MoveState.State1)
+            {
+                float theta = Mathf.Atan2(z1 - transform.position.z, x1 - transform.position.x);
+                Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
+                transform.Translate(t, Space.World);
+
+                if (transform.position.x >= x1 - 1)
+                {
+                    _moveState = MoveState.State2;
+                }
+            }
+            else if (_moveState == MoveState.State2)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+            }
         }
         else if (_movePattern == MovePattern.N)
         {
+            if (_moveState == MoveState.State0)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+
+                if (transform.position.z <= z1 - (z1 - z0) * 8 / 10)
+                {
+                    _moveState = MoveState.State1;
+                }
+            }
+            else if (_moveState == MoveState.State1)
+            {
+                float theta = Mathf.Atan2(z1 - transform.position.z, x0 - transform.position.x);
+                Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
+                transform.Translate(t, Space.World);
+
+                if (transform.position.x <= x0 + 1)
+                {
+                    _moveState = MoveState.State2;
+                }
+            }
+            else if (_moveState == MoveState.State2)
+            {
+                Vector3 t = new Vector3(0, 0, -moveSpeed);
+                transform.Translate(t, Space.World);
+            }
         }
 
         // 画面外の特定範囲まで移動したら削除
-        if (transform.position.x < -5 ||
-            transform.position.x > +5 ||
-            transform.position.z < -3 ||
-            transform.position.z > 14 )
+        if (transform.position.x < GameController.ScreenPoint0.x - 2 ||
+            transform.position.x > GameController.ScreenPoint1.x + 2 ||
+            transform.position.z < GameController.ScreenPoint0.z - 3 ||
+            transform.position.z > GameController.ScreenPoint1.z + 5)
         {
             Destroy(gameObject);
         }
