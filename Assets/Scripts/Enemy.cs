@@ -27,6 +27,7 @@ public class Enemy : MonoBehaviour
     }
     public enum ShootPattern
     {
+        NotShooting,
         Straight,
         Random,
         ToPlayer,
@@ -264,7 +265,11 @@ public class Enemy : MonoBehaviour
 
         if (elapsedTime >= _timeToStartShooting && _timeForShooting >= _shootingCycleTime)
         {
-            if (_shootPattern == ShootPattern.Straight)
+            if (_shootPattern == ShootPattern.NotShooting)
+            {
+                // 何もしない
+            }
+            else if (_shootPattern == ShootPattern.Straight)
             {
                 GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -_bulletSpeed));
             }
