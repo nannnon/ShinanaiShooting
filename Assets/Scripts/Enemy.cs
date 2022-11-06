@@ -305,7 +305,7 @@ public class Enemy : MonoBehaviour
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
             _damaged = true;
-            StartCoroutine("WaitAndBack");
+            StartCoroutine(WaitAndBack());
 
             --_physicalStrength;
             if (_physicalStrength <= 0)

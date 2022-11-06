@@ -230,7 +230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7351677941272830672, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.289
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7351677941272830672, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
       propertyPath: m_LocalPosition.y
@@ -293,6 +293,7 @@ GameObject:
   - component: {fileID: 302347588}
   - component: {fileID: 302347587}
   - component: {fileID: 302347586}
+  - component: {fileID: 302347589}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -366,6 +367,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &302347589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302347585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 027dc59be80134108b70f3eb7fdef0d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2025874925
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,6 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fec33ac6250854827b120e34e9097800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _csvFile: {fileID: 4900000, guid: 5aa722476f4174d06baaecc8fe22062c, type: 3}
   _enemy1Prefab: {fileID: 5384331674073147639, guid: e756c785ceb644085b7d0575d4376b2c, type: 3}
   _enemy2Prefab: {fileID: 1273669662807583314, guid: 86e15ff6037ea4dce8504c051395641d, type: 3}
   _enemy3Prefab: {fileID: 7986487318214287011, guid: 8db40860675c148e4aa560bd7889f4ef, type: 3}
