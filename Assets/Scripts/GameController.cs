@@ -17,10 +17,13 @@ public class GameController : MonoBehaviour
     GameObject _enemy2Prefab;
     [SerializeField]
     GameObject _enemy3Prefab;
+    [SerializeField]
+    GameObject _bossPrefab;
 
     struct EnemyData
     {
         public GameObject enemyType;
+        public bool isBoss;
         public float appearTime;
         public Vector3 position;
         public float moveSpeedCoef;
@@ -49,8 +52,13 @@ public class GameController : MonoBehaviour
             string[] items = reader.ReadLine().Split(',');
             EnemyData ed = new EnemyData();
 
+            ed.isBoss = false;
             switch (int.Parse(items[0]))
             {
+                case 0:
+                    ed.enemyType = _bossPrefab;
+                    ed.isBoss = true;
+                    break;
                 case 1:
                     ed.enemyType = _enemy1Prefab;
                     break;
@@ -61,8 +69,16 @@ public class GameController : MonoBehaviour
                     ed.enemyType = _enemy3Prefab;
                     break;
             }
+
             ed.appearTime = float.Parse(items[1]);
             ed.position = new Vector3(float.Parse(items[2]), 0, float.Parse(items[3]));
+
+            if (ed.isBoss)
+            {
+                _enemyData.Add(ed);
+                continue;
+            }
+
             ed.moveSpeedCoef = float.Parse(items[4]);
             ed.movePattern = Enum.Parse<Enemy.MovePattern>(items[5]);
             ed.shootPattern = Enum.Parse<Enemy.ShootPattern>(items[6]);
@@ -86,8 +102,16 @@ public class GameController : MonoBehaviour
             if (elapsedTime >= ed.appearTime)
             {
                 GameObject go = Instantiate(ed.enemyType);
-                Enemy e = go.GetComponent<Enemy>();
-                e.Set(ed.position, ed.moveSpeedCoef, ed.movePattern, ed.shootPattern, ed.timeToStartShooting, ed.shootingCycleTime, ed.bulletSpeed, ed.physicalStrength);
+
+                if (ed.isBoss)
+                {
+                    go.transform.position = ed.position;
+                }
+                else
+                {
+                    Enemy e = go.GetComponent<Enemy>();
+                    e.Set(ed.position, ed.moveSpeedCoef, ed.movePattern, ed.shootPattern, ed.timeToStartShooting, ed.shootingCycleTime, ed.bulletSpeed, ed.physicalStrength);
+                }
 
                 _enemyData.RemoveAt(i);
             }
