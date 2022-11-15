@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Boss1 : MonoBehaviour
 {
     [SerializeField]
     GameObject _enemyBulletPrefab;
+    [SerializeField]
+    GameObject _psBar;
 
     enum MoveState
     {
@@ -14,19 +17,27 @@ public class Boss1 : MonoBehaviour
         State2,
     }
 
-    int _physicalStrength = 30;
+    const int _maxPhysicalStrength = 30;
+    int _physicalStrength = _maxPhysicalStrength;
     MoveState _moveState = MoveState.State0;
     float _timeForShooting = 0;
     float _thetaForShooting = Mathf.PI * 5 / 4;
     bool _damaged = false;
     SpriteRenderer _spriteRenderer;
     GameObject _player;
+    Slider _psBarSlider;
 
     // Start is called before the first frame update
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _player = GameObject.FindGameObjectWithTag("Player");
+
+        // HPバーをインスタン化
+        GameObject canvas = GameObject.Find("Canvas");
+        GameObject go = Instantiate(_psBar, canvas.transform);
+
+        _psBarSlider = go.GetComponent<Slider>();
     }
 
     // Update is called once per frame
@@ -141,6 +152,7 @@ public class Boss1 : MonoBehaviour
             StartCoroutine(WaitAndBack());
 
             --_physicalStrength;
+            _psBarSlider.value = (float)_physicalStrength / (float)_maxPhysicalStrength;
             if (_physicalStrength <= 0)
             {
                 Destroy(gameObject);

@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyBulletPrefab: {fileID: 5884146725145336696, guid: be32ea8a9259042b3ad3e3a7e09b30e8, type: 3}
+  _psBar: {fileID: 1945675563733053032, guid: cbe697c893d6540918e93ca5723b6c6e, type: 3}
 --- !u!65 &6008845384852284211
 BoxCollider:
   m_ObjectHideFlags: 0
