@@ -101,9 +101,8 @@ public class Boss1 : MonoBehaviour
                 }
                 // ToPlayer
                 {
-                    float dx = _player.transform.position.x - transform.position.x;
-                    float dz = _player.transform.position.z - transform.position.z;
-                    float theta = Mathf.Atan2(dz, dx);
+                    var delta = _player.transform.position - transform.position;
+                    float theta = Mathf.Atan2(delta.z, delta.x);
                     Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
                     Vector3 rpos = new Vector3(1, 0, 0);
                     GenerateBullet(rpos, vel);

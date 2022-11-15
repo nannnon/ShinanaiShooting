@@ -281,9 +281,8 @@ public class Enemy : MonoBehaviour
             }
             else if (_shootPattern == ShootPattern.ToPlayer)
             {
-                float dx = _player.transform.position.x - transform.position.x;
-                float dz = _player.transform.position.z - transform.position.z;
-                float theta = Mathf.Atan2(dz, dx);
+                var delta = _player.transform.position - transform.position;
+                float theta = Mathf.Atan2(delta.z, delta.x);
                 Vector3 vel = new Vector3(_bulletSpeed * Mathf.Cos(theta), 0, _bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
             }
