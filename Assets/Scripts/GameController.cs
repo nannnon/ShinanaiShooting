@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 using System;
 using System.IO;
 
@@ -37,13 +38,22 @@ public class GameController : MonoBehaviour
 
     List<EnemyData> _enemyData;
     float _startTime;
+    CameraController _cameraController;
+    TextMeshProUGUI _hitNumTMP;
+    int _hitCounter = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         _startTime = Time.time;
+        _cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();  
+        _hitNumTMP = GameObject.Find("HitNum").GetComponent<TextMeshProUGUI>();
 
-        // CSVを読み込む
+        LoadCSV();
+    }
+
+    void LoadCSV()
+    {
         StringReader reader = new StringReader(_csvFile.text);
         reader.ReadLine(); // ヘッダをスキップ
         _enemyData = new List<EnemyData>();
@@ -116,5 +126,13 @@ public class GameController : MonoBehaviour
                 _enemyData.RemoveAt(i);
             }
         }
+    }
+
+    public void PlayerIsHit()
+    {
+        ++_hitCounter;
+        _hitNumTMP.text = "被弾数：" + _hitCounter;
+
+        _cameraController.Shake();
     }
 }

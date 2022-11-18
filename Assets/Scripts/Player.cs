@@ -8,14 +8,14 @@ public class Player : MonoBehaviour
     GameObject _playerBulletPrefab;
 
     float _elapsedTimeForShooting = 0;
-    bool _damaged = false;
+    bool _hit = false;
     SpriteRenderer _spriteRenderer;
-    CameraController _cameraController;
+    GameController _gameController;
 
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();  
+        _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
     }
 
     void Update()
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
         Move();
         ShootBullet();
 
-        if (_damaged)
+        if (_hit)
         {
             float level = Mathf.Abs(Mathf.Sin(Time.time * 10));
             _spriteRenderer.color = new Color(1f, 1f, 1f, level);
@@ -78,23 +78,23 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (_damaged)
+        if (_hit)
         {
             return;
         }
 
         if (other.tag == "Enemy" || other.tag == "EnemyBullet")
         {
-            _damaged = true;
+            _hit = true;
             StartCoroutine(WaitAndBack());
-            _cameraController.Shake();
+            _gameController.PlayerIsHit();
         }
     }
 
     IEnumerator WaitAndBack()
     {
         yield return new WaitForSeconds(3);
-        _damaged = false;
+        _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 }
