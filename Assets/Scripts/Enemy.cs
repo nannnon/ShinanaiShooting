@@ -32,6 +32,7 @@ public enum ShootPattern
     public float shootingCycleTime;
     public float bulletSpeed;
     public int physicalStrength;
+    public int score;
 }
 
 public class Enemy : MonoBehaviour
@@ -55,14 +56,14 @@ public class Enemy : MonoBehaviour
     float _timeForShooting = 0;
     bool _hit = false;
     SpriteRenderer _spriteRenderer;
-    GameObject _player;
+    GameController _gameController;
 
     // Start is called before the first frame update
     void Start()
     {
         _appearTime = Time.time;
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _player = GameObject.FindGameObjectWithTag("Player");
+        _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
     }
 
     // Update is called once per frame
@@ -283,7 +284,7 @@ public class Enemy : MonoBehaviour
             }
             else if (_enemyData.shootPattern == ShootPattern.ToPlayer)
             {
-                var delta = _player.transform.position - transform.position;
+                var delta = _gameController.GetPlayerPosition() - transform.position;
                 float theta = Mathf.Atan2(delta.z, delta.x);
                 Vector3 vel = new Vector3(_enemyData.bulletSpeed * Mathf.Cos(theta), 0, _enemyData.bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
@@ -312,6 +313,7 @@ public class Enemy : MonoBehaviour
             if (_enemyData.physicalStrength <= 0)
             {
                 Destroy(gameObject);
+                _gameController.EnemyIsDestroyed(_enemyData.score);
             }
         }
     }

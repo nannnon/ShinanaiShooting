@@ -33,8 +33,11 @@ public class GameController : MonoBehaviour
     List<EnemyDataPlus> _enemyDataPlus;
     float _startTime;
     CameraController _cameraController;
-    TextMeshProUGUI _hitNumTMP;
     int _playerHitCounter = 0;
+    TextMeshProUGUI _hitNumTMP;
+    int _score = 0;
+    TextMeshProUGUI _scoreTMP;
+    GameObject _player;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +45,8 @@ public class GameController : MonoBehaviour
         _startTime = Time.time;
         _cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();  
         _hitNumTMP = GameObject.Find("HitNum").GetComponent<TextMeshProUGUI>();
+        _scoreTMP = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
+        _player = GameObject.FindGameObjectWithTag("Player");
 
         LoadCSV();
     }
@@ -90,6 +95,7 @@ public class GameController : MonoBehaviour
             edp.enemyData.shootingCycleTime = float.Parse(items[8]);
             edp.enemyData.bulletSpeed = float.Parse(items[9]);
             edp.enemyData.physicalStrength = int.Parse(items[10]);
+            edp.enemyData.score = int.Parse(items[11]);
 
             _enemyDataPlus.Add(edp);
         }
@@ -128,5 +134,16 @@ public class GameController : MonoBehaviour
         _hitNumTMP.text = "被弾数：" + _playerHitCounter;
 
         _cameraController.Shake();
+    }
+
+    public void EnemyIsDestroyed(int score)
+    {
+        _score += score;
+        _scoreTMP.text = "スコア：" + _score;
+    }
+
+    public Vector3 GetPlayerPosition()
+    {
+        return _player.transform.position;
     }
 }

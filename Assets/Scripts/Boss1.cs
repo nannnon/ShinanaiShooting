@@ -24,14 +24,14 @@ public class Boss1 : MonoBehaviour
     float _thetaForShooting = Mathf.PI * 5 / 4;
     bool _hit = false;
     SpriteRenderer _spriteRenderer;
-    GameObject _player;
+    GameController _gameController;
     Slider _psBarSlider;
 
     // Start is called before the first frame update
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _player = GameObject.FindGameObjectWithTag("Player");
+        _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
 
         // HPバーをインスタン化
         GameObject canvas = GameObject.Find("Canvas");
@@ -112,7 +112,7 @@ public class Boss1 : MonoBehaviour
                 }
                 // ToPlayer
                 {
-                    var delta = _player.transform.position - transform.position;
+                    var delta = _gameController.GetPlayerPosition() - transform.position;
                     float theta = Mathf.Atan2(delta.z, delta.x);
                     Vector3 vel = new Vector3(bulletSpeed * Mathf.Cos(theta), 0, bulletSpeed * Mathf.Sin(theta));
                     Vector3 rpos = new Vector3(1, 0, 0);
@@ -156,6 +156,8 @@ public class Boss1 : MonoBehaviour
             if (_physicalStrength <= 0)
             {
                 Destroy(gameObject);
+                const int score = 20;
+                _gameController.EnemyIsDestroyed(score);
 
                 // ToDo game clear
             }
