@@ -2,22 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum MovePattern
+{
+    AppearAndShootAndBye,
+    GoThrough,
+    SouthWest,
+    SouthEast,
+    UFromLeft,
+    UFromRight,
+    NInvert,
+    N,
+}
+
+public enum ShootPattern
+{
+    NotShooting,
+    Straight,
+    Random,
+    ToPlayer,
+}
+
+ public struct EnemyData
+{
+    public float moveSpeedCoef;
+    public MovePattern movePattern;
+    public ShootPattern shootPattern;
+    public float timeToStartShooting;
+    public float shootingCycleTime;
+    public float bulletSpeed;
+    public int physicalStrength;
+}
+
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
     GameObject _enemyBulletPrefab;
 
-    public enum MovePattern
-    {
-        AppearAndShootAndBye,
-        GoThrough,
-        SouthWest,
-        SouthEast,
-        UFromLeft,
-        UFromRight,
-        NInvert,
-        N,
-    }
     enum MoveState
     {
         State0,
@@ -25,27 +46,14 @@ public class Enemy : MonoBehaviour
         State2,
         State3,
     }
-    public enum ShootPattern
-    {
-        NotShooting,
-        Straight,
-        Random,
-        ToPlayer,
-    }
 
-    float _moveSpeedCoef;
-    MovePattern _movePattern;
-    ShootPattern _shootPattern;
-    float _timeToStartShooting;
-    float _shootingCycleTime;
-    float _bulletSpeed;
-    int _physicalStrength;
+    EnemyData _enemyData;
 
     MoveState _moveState = MoveState.State0;
     float _timeForMoving;
     float _appearTime;
     float _timeForShooting = 0;
-    bool _damaged = false;
+    bool _hit = false;
     SpriteRenderer _spriteRenderer;
     GameObject _player;
 
@@ -63,34 +71,28 @@ public class Enemy : MonoBehaviour
         Move();
         ShootBullet();
 
-        if (_damaged)
+        if (_hit)
         {
             float level = Mathf.Abs(Mathf.Sin(Time.time * 10));
             _spriteRenderer.color = new Color(1f, 1f, 1f, level);
         }
     }
 
-    public void Set(Vector3 position, float moveSpeedCoef, MovePattern movePattern, ShootPattern shootPattern, float timeToStartShooting, float shootingCycleTime, float bulletSpeed, int physicalStrength)
+    public void Set(Vector3 position, EnemyData enemyData)
     {
         transform.position = position;
-        _moveSpeedCoef = moveSpeedCoef;
-        _movePattern = movePattern;
-        _shootPattern = shootPattern;
-        _timeToStartShooting = timeToStartShooting;
-        _shootingCycleTime = shootingCycleTime;
-        _bulletSpeed = bulletSpeed;
-        _physicalStrength = physicalStrength;
+        _enemyData = enemyData;
     }
 
     void Move()
     {
-        float moveSpeed = _moveSpeedCoef * Time.deltaTime;
+        float moveSpeed = _enemyData.moveSpeedCoef * Time.deltaTime;
         float x0 = GameController.ScreenPoint0.x;
         float x1 = GameController.ScreenPoint1.x;
         float z0 = GameController.ScreenPoint0.z;
         float z1 = GameController.ScreenPoint1.z;
 
-        if (_movePattern == MovePattern.AppearAndShootAndBye)
+        if (_enemyData.movePattern == MovePattern.AppearAndShootAndBye)
         {
             if (_moveState == MoveState.State0)
             {
@@ -116,24 +118,24 @@ public class Enemy : MonoBehaviour
                 transform.Translate(t, Space.World);
             }
         }
-        else if (_movePattern == MovePattern.GoThrough)
+        else if (_enemyData.movePattern == MovePattern.GoThrough)
         {
             Vector3 t = new Vector3(0, 0, -moveSpeed);
             transform.Translate(t, Space.World);
         }
-        else if (_movePattern == MovePattern.SouthWest)
+        else if (_enemyData.movePattern == MovePattern.SouthWest)
         {
             const float theta = 3 * Mathf.PI / 2 - Mathf.PI / 8;
             Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
             transform.Translate(t, Space.World);
         }
-        else if (_movePattern == MovePattern.SouthEast)
+        else if (_enemyData.movePattern == MovePattern.SouthEast)
         {
             const float theta = 3 * Mathf.PI / 2 + Mathf.PI / 8;
             Vector3 t = new Vector3(moveSpeed * Mathf.Cos(theta), 0, moveSpeed * Mathf.Sin(theta));
             transform.Translate(t, Space.World);
         }
-        else if (_movePattern == MovePattern.UFromLeft)
+        else if (_enemyData.movePattern == MovePattern.UFromLeft)
         {
             if (_moveState == MoveState.State0)
             {
@@ -161,7 +163,7 @@ public class Enemy : MonoBehaviour
                 transform.Translate(t, Space.World);
             }
         }
-        else if (_movePattern == MovePattern.UFromRight)
+        else if (_enemyData.movePattern == MovePattern.UFromRight)
         {
             if (_moveState == MoveState.State0)
             {
@@ -189,7 +191,7 @@ public class Enemy : MonoBehaviour
                 transform.Translate(t, Space.World);
             }
         }
-        else if (_movePattern == MovePattern.NInvert)
+        else if (_enemyData.movePattern == MovePattern.NInvert)
         {
             if (_moveState == MoveState.State0)
             {
@@ -218,7 +220,7 @@ public class Enemy : MonoBehaviour
                 transform.Translate(t, Space.World);
             }
         }
-        else if (_movePattern == MovePattern.N)
+        else if (_enemyData.movePattern == MovePattern.N)
         {
             if (_moveState == MoveState.State0)
             {
@@ -263,27 +265,27 @@ public class Enemy : MonoBehaviour
         float elapsedTime = Time.time - _appearTime;
         _timeForShooting += Time.deltaTime;
 
-        if (elapsedTime >= _timeToStartShooting && _timeForShooting >= _shootingCycleTime)
+        if (elapsedTime >= _enemyData.timeToStartShooting && _timeForShooting >= _enemyData.shootingCycleTime)
         {
-            if (_shootPattern == ShootPattern.NotShooting)
+            if (_enemyData.shootPattern == ShootPattern.NotShooting)
             {
                 // 何もしない
             }
-            else if (_shootPattern == ShootPattern.Straight)
+            else if (_enemyData.shootPattern == ShootPattern.Straight)
             {
-                GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -_bulletSpeed));
+                GenerateBullet(new Vector3(0, 0, -0.5f), new Vector3(0, 0, -_enemyData.bulletSpeed));
             }
-            else if (_shootPattern == ShootPattern.Random)
+            else if (_enemyData.shootPattern == ShootPattern.Random)
             {
                 float theta = Random.Range(0, 2 * Mathf.PI);
-                Vector3 vel = new Vector3(_bulletSpeed * Mathf.Cos(theta), 0, _bulletSpeed * Mathf.Sin(theta));
+                Vector3 vel = new Vector3(_enemyData.bulletSpeed * Mathf.Cos(theta), 0, _enemyData.bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
             }
-            else if (_shootPattern == ShootPattern.ToPlayer)
+            else if (_enemyData.shootPattern == ShootPattern.ToPlayer)
             {
                 var delta = _player.transform.position - transform.position;
                 float theta = Mathf.Atan2(delta.z, delta.x);
-                Vector3 vel = new Vector3(_bulletSpeed * Mathf.Cos(theta), 0, _bulletSpeed * Mathf.Sin(theta));
+                Vector3 vel = new Vector3(_enemyData.bulletSpeed * Mathf.Cos(theta), 0, _enemyData.bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
             }
 
@@ -303,11 +305,11 @@ public class Enemy : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
-            _damaged = true;
+            _hit = true;
             StartCoroutine(WaitAndBack());
 
-            --_physicalStrength;
-            if (_physicalStrength <= 0)
+            --_enemyData.physicalStrength;
+            if (_enemyData.physicalStrength <= 0)
             {
                 Destroy(gameObject);
             }
@@ -317,7 +319,7 @@ public class Enemy : MonoBehaviour
     IEnumerator WaitAndBack()
     {
         yield return new WaitForSeconds(1);
-        _damaged = false;
+        _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 }

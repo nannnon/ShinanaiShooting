@@ -21,26 +21,20 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _bossPrefab;
 
-    struct EnemyData
+    struct EnemyDataPlus
     {
         public GameObject enemyType;
         public bool isBoss;
         public float appearTime;
         public Vector3 position;
-        public float moveSpeedCoef;
-        public Enemy.MovePattern movePattern;
-        public Enemy.ShootPattern shootPattern;
-        public float timeToStartShooting;
-        public float shootingCycleTime;
-        public float bulletSpeed;
-        public int physicalStrength;
+        public EnemyData enemyData;
     }
 
-    List<EnemyData> _enemyData;
+    List<EnemyDataPlus> _enemyDataPlus;
     float _startTime;
     CameraController _cameraController;
     TextMeshProUGUI _hitNumTMP;
-    int _hitCounter = 0;
+    int _playerHitCounter = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -56,48 +50,48 @@ public class GameController : MonoBehaviour
     {
         StringReader reader = new StringReader(_csvFile.text);
         reader.ReadLine(); // ヘッダをスキップ
-        _enemyData = new List<EnemyData>();
+        _enemyDataPlus = new List<EnemyDataPlus>();
         while (reader.Peek() != -1)
         {
             string[] items = reader.ReadLine().Split(',');
-            EnemyData ed = new EnemyData();
+            EnemyDataPlus edp = new EnemyDataPlus();
 
-            ed.isBoss = false;
+            edp.isBoss = false;
             switch (int.Parse(items[0]))
             {
                 case 0:
-                    ed.enemyType = _bossPrefab;
-                    ed.isBoss = true;
+                    edp.enemyType = _bossPrefab;
+                    edp.isBoss = true;
                     break;
                 case 1:
-                    ed.enemyType = _enemy1Prefab;
+                    edp.enemyType = _enemy1Prefab;
                     break;
                 case 2:
-                    ed.enemyType = _enemy2Prefab;
+                    edp.enemyType = _enemy2Prefab;
                     break;
                 case 3:
-                    ed.enemyType = _enemy3Prefab;
+                    edp.enemyType = _enemy3Prefab;
                     break;
             }
 
-            ed.appearTime = float.Parse(items[1]);
-            ed.position = new Vector3(float.Parse(items[2]), 0, float.Parse(items[3]));
+            edp.appearTime = float.Parse(items[1]);
+            edp.position = new Vector3(float.Parse(items[2]), 0, float.Parse(items[3]));
 
-            if (ed.isBoss)
+            if (edp.isBoss)
             {
-                _enemyData.Add(ed);
+                _enemyDataPlus.Add(edp);
                 continue;
             }
 
-            ed.moveSpeedCoef = float.Parse(items[4]);
-            ed.movePattern = Enum.Parse<Enemy.MovePattern>(items[5]);
-            ed.shootPattern = Enum.Parse<Enemy.ShootPattern>(items[6]);
-            ed.timeToStartShooting = float.Parse(items[7]);
-            ed.shootingCycleTime = float.Parse(items[8]);
-            ed.bulletSpeed = float.Parse(items[9]);
-            ed.physicalStrength = int.Parse(items[10]);
+            edp.enemyData.moveSpeedCoef = float.Parse(items[4]);
+            edp.enemyData.movePattern = Enum.Parse<MovePattern>(items[5]);
+            edp.enemyData.shootPattern = Enum.Parse<ShootPattern>(items[6]);
+            edp.enemyData.timeToStartShooting = float.Parse(items[7]);
+            edp.enemyData.shootingCycleTime = float.Parse(items[8]);
+            edp.enemyData.bulletSpeed = float.Parse(items[9]);
+            edp.enemyData.physicalStrength = int.Parse(items[10]);
 
-            _enemyData.Add(ed);
+            _enemyDataPlus.Add(edp);
         }
     }
 
@@ -105,33 +99,33 @@ public class GameController : MonoBehaviour
     void Update()
     {
         float elapsedTime = Time.time - _startTime;
-        for (int i = _enemyData.Count - 1; i >= 0; --i)
+        for (int i = _enemyDataPlus.Count - 1; i >= 0; --i)
         {
-            EnemyData ed = _enemyData[i];
+            EnemyDataPlus edp = _enemyDataPlus[i];
 
-            if (elapsedTime >= ed.appearTime)
+            if (elapsedTime >= edp.appearTime)
             {
-                GameObject go = Instantiate(ed.enemyType);
+                GameObject go = Instantiate(edp.enemyType);
 
-                if (ed.isBoss)
+                if (edp.isBoss)
                 {
-                    go.transform.position = ed.position;
+                    go.transform.position = edp.position;
                 }
                 else
                 {
                     Enemy e = go.GetComponent<Enemy>();
-                    e.Set(ed.position, ed.moveSpeedCoef, ed.movePattern, ed.shootPattern, ed.timeToStartShooting, ed.shootingCycleTime, ed.bulletSpeed, ed.physicalStrength);
+                    e.Set(edp.position, edp.enemyData);
                 }
 
-                _enemyData.RemoveAt(i);
+                _enemyDataPlus.RemoveAt(i);
             }
         }
     }
 
     public void PlayerIsHit()
     {
-        ++_hitCounter;
-        _hitNumTMP.text = "被弾数：" + _hitCounter;
+        ++_playerHitCounter;
+        _hitNumTMP.text = "被弾数：" + _playerHitCounter;
 
         _cameraController.Shake();
     }

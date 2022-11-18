@@ -22,7 +22,7 @@ public class Boss1 : MonoBehaviour
     MoveState _moveState = MoveState.State0;
     float _timeForShooting = 0;
     float _thetaForShooting = Mathf.PI * 5 / 4;
-    bool _damaged = false;
+    bool _hit = false;
     SpriteRenderer _spriteRenderer;
     GameObject _player;
     Slider _psBarSlider;
@@ -46,7 +46,7 @@ public class Boss1 : MonoBehaviour
         Move();
         ShootBullet();
 
-        if (_damaged)
+        if (_hit)
         {
             float level = Mathf.Abs(Mathf.Sin(Time.time * 10));
             _spriteRenderer.color = new Color(1f, 1f, 1f, level);
@@ -148,7 +148,7 @@ public class Boss1 : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
-            _damaged = true;
+            _hit = true;
             StartCoroutine(WaitAndBack());
 
             --_physicalStrength;
@@ -165,7 +165,7 @@ public class Boss1 : MonoBehaviour
     IEnumerator WaitAndBack()
     {
         yield return new WaitForSeconds(1);
-        _damaged = false;
+        _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 }
