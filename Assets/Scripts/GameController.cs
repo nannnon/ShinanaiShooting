@@ -20,6 +20,10 @@ public class GameController : MonoBehaviour
     GameObject _enemy3Prefab;
     [SerializeField]
     GameObject _bossPrefab;
+    [SerializeField]
+    GameObject _result;
+    [SerializeField]
+    String _nextStageName;
 
     struct EnemyDataPlus
     {
@@ -145,5 +149,44 @@ public class GameController : MonoBehaviour
     public Vector3 GetPlayerPosition()
     {
         return _player.transform.position;
+    }
+
+    public void StageClear()
+    {
+        _result.SetActive(true);
+
+        var resultText = GameObject.Find("ResultText").GetComponent<TextMeshProUGUI>();
+
+        resultText.text = "";
+        resultText.text += "スコア：" + _score + "<br>";
+
+        int hitPenaltyScore = _playerHitCounter * -3;
+        resultText.text += "被弾によるスコア減少：" + hitPenaltyScore + "<br>";
+
+        int bombBonusScore = 3 * 10;
+        resultText.text += "ボム残弾によるスコア増加：" + bombBonusScore + "<br>";
+
+        int finalScore = _score + hitPenaltyScore + bombBonusScore;
+        resultText.text += "最終スコア：" + finalScore + "<br>";
+
+        String eval = "";
+        if (finalScore <= 20)
+        {
+            eval = "残念な感じ";
+        }
+        else if (finalScore <= 60)
+        {
+            eval = "良い感じ";
+        }
+        else
+        {
+            eval = "素晴らしい";
+        }
+        resultText.text += "評価：" + eval;
+    }
+
+    public void LoadNextScene()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(_nextStageName);
     }
 }

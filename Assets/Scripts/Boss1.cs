@@ -159,7 +159,7 @@ public class Boss1 : MonoBehaviour
                 const int score = 20;
                 _gameController.EnemyIsDestroyed(score);
 
-                // ToDo game clear
+                _gameController.StageClear();
             }
         }
     }
