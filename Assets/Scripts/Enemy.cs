@@ -39,6 +39,8 @@ public class Enemy : MonoBehaviour
 {
     [SerializeField]
     GameObject _enemyBulletPrefab;
+    [SerializeField]
+    GameObject _explosionPrefab;
 
     enum MoveState
     {
@@ -313,6 +315,7 @@ public class Enemy : MonoBehaviour
             if (_enemyData.physicalStrength <= 0)
             {
                 Destroy(gameObject);
+                Explode();
                 _gameController.EnemyIsDestroyed(_enemyData.score);
             }
         }
@@ -323,5 +326,11 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(1);
         _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+    }
+
+    void Explode()
+    {
+        GameObject go = Instantiate(_explosionPrefab);
+        go.transform.position = transform.position;
     }
 }

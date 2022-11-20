@@ -8,7 +8,9 @@ public class Boss1 : MonoBehaviour
     [SerializeField]
     GameObject _enemyBulletPrefab;
     [SerializeField]
-    GameObject _psBar;
+    GameObject _psBarPrefab;
+    [SerializeField]
+    GameObject _explosionPrefab;
 
     enum MoveState
     {
@@ -35,7 +37,7 @@ public class Boss1 : MonoBehaviour
 
         // HPバーをインスタン化
         GameObject canvas = GameObject.Find("Canvas");
-        GameObject go = Instantiate(_psBar, canvas.transform);
+        GameObject go = Instantiate(_psBarPrefab, canvas.transform);
 
         _psBarSlider = go.GetComponent<Slider>();
     }
@@ -159,6 +161,8 @@ public class Boss1 : MonoBehaviour
                 const int score = 20;
                 _gameController.EnemyIsDestroyed(score);
 
+                Explode();
+
                 _gameController.StageClear();
             }
         }
@@ -169,5 +173,21 @@ public class Boss1 : MonoBehaviour
         yield return new WaitForSeconds(1);
         _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+    }
+
+    void Explode()
+    {
+        {
+            GameObject go = Instantiate(_explosionPrefab);
+            go.transform.position = transform.position + new Vector3(0.3f, 0, 0);
+        }
+        {
+            GameObject go = Instantiate(_explosionPrefab);
+            go.transform.position = transform.position + new Vector3(-0.3f, 0, 0.1f);
+        }
+        {
+            GameObject go = Instantiate(_explosionPrefab);
+            go.transform.position = transform.position + new Vector3(-0.2f, 0, -0.2f);
+        }
     }
 }
