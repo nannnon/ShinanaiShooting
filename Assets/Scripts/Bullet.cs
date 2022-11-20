@@ -22,11 +22,14 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         transform.Translate(_velocity * Time.deltaTime, Space.World);
-    }
 
-    void OnBecameInvisible()
-    {
-        Destroy(gameObject);
+        if (transform.position.x < GameController.ScreenPoint0.x - 2 ||
+            transform.position.x > GameController.ScreenPoint1.x + 2 ||
+            transform.position.z < GameController.ScreenPoint0.z - 2 ||
+            transform.position.z > GameController.ScreenPoint1.z + 2)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnTriggerEnter(Collider other)
