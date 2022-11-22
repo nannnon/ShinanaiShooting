@@ -11,6 +11,8 @@ public class Boss1 : MonoBehaviour
     GameObject _psBarPrefab;
     [SerializeField]
     GameObject _explosionPrefab;
+    [SerializeField]
+    GameObject _cautionPrefab;
 
     enum MoveState
     {
@@ -38,8 +40,10 @@ public class Boss1 : MonoBehaviour
         // HPバーをインスタン化
         GameObject canvas = GameObject.Find("Canvas");
         GameObject go = Instantiate(_psBarPrefab, canvas.transform);
-
         _psBarSlider = go.GetComponent<Slider>();
+
+        // Cautionを表示
+        Instantiate(_cautionPrefab);
     }
 
     // Update is called once per frame
