@@ -13,6 +13,8 @@ public class Boss1 : MonoBehaviour
     GameObject _explosionPrefab;
     [SerializeField]
     GameObject _cautionPrefab;
+    [SerializeField]
+    GameObject _winPrefab;
 
     enum MoveState
     {
@@ -167,7 +169,7 @@ public class Boss1 : MonoBehaviour
 
                 Explode();
 
-                _gameController.StageClear();
+                Instantiate(_winPrefab);
             }
         }
     }
