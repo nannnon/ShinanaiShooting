@@ -15,6 +15,7 @@ public abstract class Enemy : MonoBehaviour
     bool _hit = false;
     SpriteRenderer _spriteRenderer;
     protected GameController _gameController;
+    AudioSource _audioSource;
 
     protected enum MoveState
     {
@@ -30,6 +31,7 @@ public abstract class Enemy : MonoBehaviour
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     protected void Update()
@@ -60,6 +62,7 @@ public abstract class Enemy : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
+            _audioSource.Play();
             Damaged(1);
         }
     }

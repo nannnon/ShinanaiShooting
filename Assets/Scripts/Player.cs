@@ -14,11 +14,13 @@ public class Player : MonoBehaviour
     SpriteRenderer _spriteRenderer;
     GameController _gameController;
     int _bombsNum = 3;
+    AudioSource _audioSource;
 
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -102,6 +104,8 @@ public class Player : MonoBehaviour
             _hit = true;
             StartCoroutine(WaitAndBack());
             _gameController.PlayerIsHit();
+
+            _audioSource.Play();
         }
     }
 
