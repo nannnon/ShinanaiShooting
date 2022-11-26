@@ -3,62 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Boss1 : MonoBehaviour
+public class Boss1 : Enemy
 {
     [SerializeField]
-    GameObject _enemyBulletPrefab;
-    [SerializeField]
-    GameObject _psBarPrefab;
-    [SerializeField]
-    GameObject _explosionPrefab;
+    GameObject _hpBarPrefab;
     [SerializeField]
     GameObject _cautionPrefab;
     [SerializeField]
     GameObject _winPrefab;
 
-    enum MoveState
-    {
-        State0,
-        State1,
-        State2,
-    }
-
-    const int _maxPhysicalStrength = 30;
-    int _physicalStrength = _maxPhysicalStrength;
-    MoveState _moveState = MoveState.State0;
-    float _timeForShooting = 0;
+    int _maxHP;
     float _thetaForShooting = Mathf.PI * 5 / 4;
-    bool _hit = false;
-    SpriteRenderer _spriteRenderer;
-    GameController _gameController;
-    Slider _psBarSlider;
+    Slider _hpBarSlider;
 
-    // Start is called before the first frame update
-    void Start()
+    new void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
+        base.Start();
 
         // HPバーをインスタン化
         GameObject canvas = GameObject.Find("Canvas");
-        GameObject go = Instantiate(_psBarPrefab, canvas.transform);
-        _psBarSlider = go.GetComponent<Slider>();
+        GameObject go = Instantiate(_hpBarPrefab, canvas.transform);
+        _hpBarSlider = go.GetComponent<Slider>();
 
         // Cautionを表示
         Instantiate(_cautionPrefab);
     }
 
-    // Update is called once per frame
-    void Update()
+    new void Update()
     {
+        base.Update();
         Move();
         ShootBullet();
+    }
 
-        if (_hit)
-        {
-            float level = Mathf.Abs(Mathf.Sin(Time.time * 10));
-            _spriteRenderer.color = new Color(1f, 1f, 1f, level);
-        }
+    public new void Set(Vector3 position, int hp, int score)
+    {
+        base.Set(position, hp, score);
+        _maxHP = hp;
     }
 
     void Move()
@@ -144,56 +125,21 @@ public class Boss1 : MonoBehaviour
         }
     }
 
-    void GenerateBullet(Vector3 relativePos, Vector3 vel)
+    protected override void Damaged2(int damage)
     {
-        GameObject go = Instantiate(_enemyBulletPrefab);
-        Bullet b = go.GetComponent<Bullet>();
-        Vector3 pos = transform.position + relativePos;
-        b.Set(pos, vel);
-    }
+        _hp -= damage;
+        _hpBarSlider.value = (float)_hp / (float)_maxHP;
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player" || other.tag == "PlayerBullet")
+        if (_hp <= 0)
         {
-            _hit = true;
-            StartCoroutine(WaitAndBack());
+            Destroy(gameObject);
+            _gameController.EnemyIsDestroyed(_score);
 
-            --_physicalStrength;
-            _psBarSlider.value = (float)_physicalStrength / (float)_maxPhysicalStrength;
-            if (_physicalStrength <= 0)
-            {
-                Destroy(gameObject);
-                const int score = 20;
-                _gameController.EnemyIsDestroyed(score);
+            MakeExplosion(transform.position + new Vector3(0.3f, 0, 0));
+            MakeExplosion(transform.position + new Vector3(-0.3f, 0, 0.1f));
+            MakeExplosion(transform.position + new Vector3(-0.2f, 0, -0.2f));
 
-                Explode();
-
-                Instantiate(_winPrefab);
-            }
-        }
-    }
-
-    IEnumerator WaitAndBack()
-    {
-        yield return new WaitForSeconds(1);
-        _hit = false;
-        _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-    }
-
-    void Explode()
-    {
-        {
-            GameObject go = Instantiate(_explosionPrefab);
-            go.transform.position = transform.position + new Vector3(0.3f, 0, 0);
-        }
-        {
-            GameObject go = Instantiate(_explosionPrefab);
-            go.transform.position = transform.position + new Vector3(-0.3f, 0, 0.1f);
-        }
-        {
-            GameObject go = Instantiate(_explosionPrefab);
-            go.transform.position = transform.position + new Vector3(-0.2f, 0, -0.2f);
+            Instantiate(_winPrefab);
         }
     }
 }

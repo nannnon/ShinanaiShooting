@@ -25,32 +25,35 @@ public class GameController : MonoBehaviour
     [SerializeField]
     String _nextStageName;
 
-    struct EnemyDataPlus
+    struct EnemyData
     {
         public GameObject enemyType;
         public bool isBoss;
         public float appearTime;
         public Vector3 position;
-        public EnemyData enemyData;
+        public int hp;
+        public int score;
+        public NormalEnemyData enemyData;
     }
 
-    List<EnemyDataPlus> _enemyDataPlus;
+    List<EnemyData> _enemyData;
     float _startTime;
     CameraController _cameraController;
     int _playerHitCounter = 0;
-    TextMeshProUGUI _hitNumTMP;
     int _score = 0;
-    TextMeshProUGUI _scoreTMP;
     GameObject _player;
+    TextMeshProUGUI _hitNumTMP;
+    TextMeshProUGUI _scoreTMP;
+    TextMeshProUGUI _bombsNumTMP;
 
-    // Start is called before the first frame update
     void Start()
     {
         _startTime = Time.time;
         _cameraController = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraController>();  
+        _player = GameObject.FindGameObjectWithTag("Player");
         _hitNumTMP = GameObject.Find("HitNum").GetComponent<TextMeshProUGUI>();
         _scoreTMP = GameObject.Find("Score").GetComponent<TextMeshProUGUI>();
-        _player = GameObject.FindGameObjectWithTag("Player");
+        _bombsNumTMP = GameObject.Find("BombNum").GetComponent<TextMeshProUGUI>();
 
         LoadCSV();
     }
@@ -59,75 +62,75 @@ public class GameController : MonoBehaviour
     {
         StringReader reader = new StringReader(_csvFile.text);
         reader.ReadLine(); // ヘッダをスキップ
-        _enemyDataPlus = new List<EnemyDataPlus>();
+        _enemyData = new List<EnemyData>();
         while (reader.Peek() != -1)
         {
             string[] items = reader.ReadLine().Split(',');
-            EnemyDataPlus edp = new EnemyDataPlus();
+            EnemyData ed = new EnemyData();
 
-            edp.isBoss = false;
+            ed.isBoss = false;
             switch (int.Parse(items[0]))
             {
                 case 0:
-                    edp.enemyType = _bossPrefab;
-                    edp.isBoss = true;
+                    ed.enemyType = _bossPrefab;
+                    ed.isBoss = true;
                     break;
                 case 1:
-                    edp.enemyType = _enemy1Prefab;
+                    ed.enemyType = _enemy1Prefab;
                     break;
                 case 2:
-                    edp.enemyType = _enemy2Prefab;
+                    ed.enemyType = _enemy2Prefab;
                     break;
                 case 3:
-                    edp.enemyType = _enemy3Prefab;
+                    ed.enemyType = _enemy3Prefab;
                     break;
             }
 
-            edp.appearTime = float.Parse(items[1]);
-            edp.position = new Vector3(float.Parse(items[2]), 0, float.Parse(items[3]));
+            ed.appearTime = float.Parse(items[1]);
+            ed.position = new Vector3(float.Parse(items[2]), 0, float.Parse(items[3]));
+            ed.hp = int.Parse(items[4]);
+            ed.score = int.Parse(items[5]);
 
-            if (edp.isBoss)
+            if (ed.isBoss)
             {
-                _enemyDataPlus.Add(edp);
+                _enemyData.Add(ed);
                 continue;
             }
 
-            edp.enemyData.moveSpeedCoef = float.Parse(items[4]);
-            edp.enemyData.movePattern = Enum.Parse<MovePattern>(items[5]);
-            edp.enemyData.shootPattern = Enum.Parse<ShootPattern>(items[6]);
-            edp.enemyData.timeToStartShooting = float.Parse(items[7]);
-            edp.enemyData.shootingCycleTime = float.Parse(items[8]);
-            edp.enemyData.bulletSpeed = float.Parse(items[9]);
-            edp.enemyData.physicalStrength = int.Parse(items[10]);
-            edp.enemyData.score = int.Parse(items[11]);
+            ed.enemyData.moveSpeedCoef = float.Parse(items[6]);
+            ed.enemyData.movePattern = Enum.Parse<MovePattern>(items[7]);
+            ed.enemyData.shootPattern = Enum.Parse<ShootPattern>(items[8]);
+            ed.enemyData.timeToStartShooting = float.Parse(items[9]);
+            ed.enemyData.shootingCycleTime = float.Parse(items[10]);
+            ed.enemyData.bulletSpeed = float.Parse(items[11]);
 
-            _enemyDataPlus.Add(edp);
+            _enemyData.Add(ed);
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         float elapsedTime = Time.time - _startTime;
-        for (int i = _enemyDataPlus.Count - 1; i >= 0; --i)
+        for (int i = _enemyData.Count - 1; i >= 0; --i)
         {
-            EnemyDataPlus edp = _enemyDataPlus[i];
+            EnemyData ed = _enemyData[i];
 
-            if (elapsedTime >= edp.appearTime)
+            if (elapsedTime >= ed.appearTime)
             {
-                GameObject go = Instantiate(edp.enemyType);
+                GameObject go = Instantiate(ed.enemyType);
 
-                if (edp.isBoss)
+                if (ed.isBoss)
                 {
-                    go.transform.position = edp.position;
+                    Boss1 b = go.GetComponent<Boss1>();
+                    b.Set(ed.position, ed.hp, ed.score);
                 }
                 else
                 {
-                    Enemy e = go.GetComponent<Enemy>();
-                    e.Set(edp.position, edp.enemyData);
+                    NormalEnemy e = go.GetComponent<NormalEnemy>();
+                    e.Set(ed.position, ed.hp, ed.score, ed.enemyData);
                 }
 
-                _enemyDataPlus.RemoveAt(i);
+                _enemyData.RemoveAt(i);
             }
         }
     }
@@ -163,7 +166,7 @@ public class GameController : MonoBehaviour
         int hitPenaltyScore = _playerHitCounter * -3;
         resultText.text += "被弾によるスコア減少：" + hitPenaltyScore + "<br>";
 
-        int bombBonusScore = 3 * 10;
+        int bombBonusScore = _player.GetComponent<Player>().GetBombsNum() * 10;
         resultText.text += "ボム残弾によるスコア増加：" + bombBonusScore + "<br>";
 
         int finalScore = _score + hitPenaltyScore + bombBonusScore;
@@ -188,5 +191,30 @@ public class GameController : MonoBehaviour
     public void LoadNextScene()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(_nextStageName);
+    }
+
+    public void PlayerUsedBomb(int bombsNum)
+    {
+        // ボム数表示反映
+        _bombsNumTMP.text = "ボム数：" + bombsNum;
+
+        // 全ての敵弾を消す
+        {
+            var gos = GameObject.FindGameObjectsWithTag("EnemyBullet");
+            foreach (GameObject go in gos)
+            {
+                Destroy(go);
+            }
+        }
+
+        // 全ての敵にダメージを与える
+        {
+            var gos = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (GameObject go in gos)
+            {
+                const int damage = 5;
+                go.GetComponent<Enemy>().Damaged(damage);
+            }
+        }
     }
 }

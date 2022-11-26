@@ -6,11 +6,14 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     GameObject _playerBulletPrefab;
+    [SerializeField]
+    GameObject _bombExplosionPrefab;
 
     float _elapsedTimeForShooting = 0;
     bool _hit = false;
     SpriteRenderer _spriteRenderer;
     GameController _gameController;
+    int _bombsNum = 3;
 
     void Start()
     {
@@ -22,6 +25,7 @@ public class Player : MonoBehaviour
     {
         Move();
         ShootBullet();
+        ShootBomb();
 
         if (_hit)
         {
@@ -76,6 +80,16 @@ public class Player : MonoBehaviour
         }
     }
 
+    void ShootBomb()
+    {
+        if (_bombsNum > 0 && Input.GetKeyDown(KeyCode.Space))
+        {
+            --_bombsNum;
+            Instantiate(_bombExplosionPrefab);
+            _gameController.PlayerUsedBomb(_bombsNum);
+        }
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (_hit)
@@ -96,5 +110,10 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(3);
         _hit = false;
         _spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+    }
+
+    public int GetBombsNum()
+    {
+        return _bombsNum;
     }
 }
