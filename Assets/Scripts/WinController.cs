@@ -8,15 +8,19 @@ public class WinController : MonoBehaviour
     void Start()
     {
         StartCoroutine(WaitAndStageClear());
+
+        Time.timeScale = 0.1f;
     }
 
     IEnumerator WaitAndStageClear()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.2f);
 
         var gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
         gameController.StageClear();
 
         Destroy(gameObject);
+
+        Time.timeScale = 1;
     }
 }
