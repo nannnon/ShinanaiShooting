@@ -33,7 +33,7 @@ public class GameController : MonoBehaviour
         public Vector3 position;
         public int hp;
         public int score;
-        public NormalEnemyData enemyData;
+        public NormalEnemyData normalEnemyData;
     }
 
     List<EnemyData> _enemyData;
@@ -97,12 +97,13 @@ public class GameController : MonoBehaviour
                 continue;
             }
 
-            ed.enemyData.moveSpeedCoef = float.Parse(items[6]);
-            ed.enemyData.movePattern = Enum.Parse<MovePattern>(items[7]);
-            ed.enemyData.shootPattern = Enum.Parse<ShootPattern>(items[8]);
-            ed.enemyData.timeToStartShooting = float.Parse(items[9]);
-            ed.enemyData.shootingCycleTime = float.Parse(items[10]);
-            ed.enemyData.bulletSpeed = float.Parse(items[11]);
+            ed.normalEnemyData.moveSpeedCoef = float.Parse(items[6]);
+            ed.normalEnemyData.movePattern = Enum.Parse<MovePattern>(items[7]);
+            ed.normalEnemyData.shootPattern = Enum.Parse<ShootPattern>(items[8]);
+            ed.normalEnemyData.timeToStartShooting = float.Parse(items[9]);
+            ed.normalEnemyData.shootingCycleTime = float.Parse(items[10]);
+            ed.normalEnemyData.bulletSpeed = float.Parse(items[11]);
+            ed.normalEnemyData.isItemHolder = bool.Parse(items[12]);
 
             _enemyData.Add(ed);
         }
@@ -127,7 +128,7 @@ public class GameController : MonoBehaviour
                 else
                 {
                     NormalEnemy e = go.GetComponent<NormalEnemy>();
-                    e.Set(ed.position, ed.hp, ed.score, ed.enemyData);
+                    e.Set(ed.position, ed.hp, ed.score, ed.normalEnemyData);
                 }
 
                 _enemyData.RemoveAt(i);

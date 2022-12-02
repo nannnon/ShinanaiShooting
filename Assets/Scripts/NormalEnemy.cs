@@ -31,7 +31,7 @@ public enum ShootPattern
     public float timeToStartShooting;
     public float shootingCycleTime;
     public float bulletSpeed;
-    public int score;
+    public bool isItemHolder;
 }
 
 public class NormalEnemy : Enemy
