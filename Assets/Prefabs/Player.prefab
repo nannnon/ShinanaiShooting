@@ -102,6 +102,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerBulletPrefab: {fileID: 3364960539594308323, guid: 5d3a3d8ccf5be43cfb737f2c1db15ae5, type: 3}
   _bombExplosionPrefab: {fileID: 7151190905753155653, guid: 9409ac009e1e549c380955041f1c2587, type: 3}
+  _damaged: {fileID: 8300000, guid: 7f900ebfedb1a4ed5a8a2a40aaa2ed4d, type: 3}
+  _getItem: {fileID: 8300000, guid: 3291c8d4771184ceda04c938d8d5b215, type: 3}
+  _player2Sprite: {fileID: 21300000, guid: c89df0899fe40477f98220f27870d825, type: 3}
+  _player3Sprite: {fileID: 21300000, guid: 2da6c242eef314d04ba87ba0ac0dc3a6, type: 3}
 --- !u!54 &-508265883753049338
 Rigidbody:
   m_ObjectHideFlags: 0
