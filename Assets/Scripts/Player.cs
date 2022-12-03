@@ -12,6 +12,17 @@ public class Player : MonoBehaviour
     AudioClip _damaged;
     [SerializeField]
     AudioClip _getItem;
+    [SerializeField]
+    Sprite _player2Sprite;
+    [SerializeField]
+    Sprite _player3Sprite;
+
+    enum PowerUpStatus
+    {
+        SingleShot,
+        ThreeWay,
+        DoubleFunnel,
+    }
 
     float _elapsedTimeForShooting = 0;
     bool _hit = false;
@@ -19,12 +30,23 @@ public class Player : MonoBehaviour
     GameController _gameController;
     int _bombsNum = 3;
     AudioSource _audioSource;
+    static PowerUpStatus s_powerUpStatus = PowerUpStatus.SingleShot;
 
     void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _gameController = GameObject.Find("Game Controller").GetComponent<GameController>();
         _audioSource = GetComponent<AudioSource>();
+
+        switch (s_powerUpStatus)
+        {
+            case PowerUpStatus.ThreeWay:
+                _spriteRenderer.sprite = _player2Sprite;
+                break;
+            case PowerUpStatus.DoubleFunnel:
+                _spriteRenderer.sprite = _player3Sprite;
+                break;
+        }
     }
 
     void Update()
@@ -76,14 +98,32 @@ public class Player : MonoBehaviour
         if (_elapsedTimeForShooting >= shootingCycle)
         {
             // 弾を発射
-            GameObject go = Instantiate(_playerBulletPrefab);
-            Bullet b = go.GetComponent<Bullet>();
-            Vector3 pos = transform.position + new Vector3(0, 0, 0.5f);
-            Vector3 vel = new Vector3(0, 0, 6f);
-            b.Set(pos, vel);
+            GenerateBullet(new Vector3(0, 0, 0.5f), new Vector3(0, 0, 6f));
+
+            if (s_powerUpStatus == PowerUpStatus.ThreeWay || s_powerUpStatus == PowerUpStatus.DoubleFunnel)
+            {
+                // 左右斜め方向に弾を発射
+                GenerateBullet(new Vector3(0, 0, 0.5f), new Vector3(-2, 0, 5f));
+                GenerateBullet(new Vector3(0, 0, 0.5f), new Vector3(+2, 0, 5f));
+            }
+
+            if (s_powerUpStatus == PowerUpStatus.DoubleFunnel)
+            {
+                // 左右のファンネルから弾発射
+                GenerateBullet(new Vector3(-0.5f, 0, 0), new Vector3(0, 0, 6f));
+                GenerateBullet(new Vector3(+0.5f, 0, 0), new Vector3(0, 0, 6f));
+            }
 
             _elapsedTimeForShooting = 0;
         }
+    }
+
+    void GenerateBullet(Vector3 relativePos, Vector3 vel)
+    {
+        GameObject go = Instantiate(_playerBulletPrefab);
+        Bullet b = go.GetComponent<Bullet>();
+        Vector3 pos = transform.position + relativePos;
+        b.Set(pos, vel);
     }
 
     void ShootBomb()
@@ -113,6 +153,18 @@ public class Player : MonoBehaviour
         }
         else if (other.tag == "Item")
         {
+            switch (s_powerUpStatus)
+            {
+                case PowerUpStatus.SingleShot:
+                    s_powerUpStatus = PowerUpStatus.ThreeWay;
+                    _spriteRenderer.sprite = _player2Sprite;
+                    break;
+                case PowerUpStatus.ThreeWay:
+                    s_powerUpStatus = PowerUpStatus.DoubleFunnel;
+                    _spriteRenderer.sprite = _player3Sprite;
+                    break;
+            }
+
             _audioSource.PlayOneShot(_getItem);
         }
     }

@@ -232,6 +232,18 @@ PrefabInstance:
       propertyPath: _getItem
       value: 
       objectReference: {fileID: 8300000, guid: 3291c8d4771184ceda04c938d8d5b215, type: 3}
+    - target: {fileID: -2267867361735645600, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: _playerSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b558723172e7b4caeb279cc840ad6caf, type: 3}
+    - target: {fileID: -2267867361735645600, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: _player2Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c89df0899fe40477f98220f27870d825, type: 3}
+    - target: {fileID: -2267867361735645600, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: _player3Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2da6c242eef314d04ba87ba0ac0dc3a6, type: 3}
     - target: {fileID: 4363284101041230224, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
       propertyPath: m_audioClip
       value: 
