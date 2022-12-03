@@ -37,6 +37,9 @@ public enum ShootPattern
 
 public class NormalEnemy : Enemy
 {
+    [SerializeField]
+    GameObject _itemPrefab;
+
     NormalEnemyData _normalEnemyData;
     float _timeForMoving;
     float _appearTime;
@@ -288,6 +291,12 @@ public class NormalEnemy : Enemy
             Destroy(gameObject);
             _gameController.EnemyIsDestroyed(_score);
             MakeExplosion(transform.position);
+
+            if (_normalEnemyData.isItemHolder)
+            {
+                GameObject go = Instantiate(_itemPrefab);
+                go.transform.position = transform.position;
+            }
         }
     }
 }

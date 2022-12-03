@@ -224,6 +224,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -2267867361735645600, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: _damaged
+      value: 
+      objectReference: {fileID: 8300000, guid: 7f900ebfedb1a4ed5a8a2a40aaa2ed4d, type: 3}
+    - target: {fileID: -2267867361735645600, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: _getItem
+      value: 
+      objectReference: {fileID: 8300000, guid: 3291c8d4771184ceda04c938d8d5b215, type: 3}
+    - target: {fileID: 4363284101041230224, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7351677941272830672, guid: 4b14f5bcf5df748f2a78586697826cbd, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -386,6 +398,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7986487318214287011, guid: 685522327be11451599173d0db33a434, type: 3}
     - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
+      propertyPath: _enemy5Prefab
+      value: 
+      objectReference: {fileID: 7986487318214287011, guid: 13e77105d780f4f4489e61c70cadf324, type: 3}
+    - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: _nextStageName
       value: Stage3
       objectReference: {fileID: 0}
@@ -446,6 +462,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2468007665192638120, guid: 26de8b695064745d387c02c1152fdbea, type: 3}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468007665192638120, guid: 26de8b695064745d387c02c1152fdbea, type: 3}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2468007665192638120, guid: 26de8b695064745d387c02c1152fdbea, type: 3}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2468007665192638122, guid: 26de8b695064745d387c02c1152fdbea, type: 3}
       propertyPath: m_Name
       value: Main Camera

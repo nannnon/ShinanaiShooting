@@ -8,6 +8,10 @@ public class Player : MonoBehaviour
     GameObject _playerBulletPrefab;
     [SerializeField]
     GameObject _bombExplosionPrefab;
+    [SerializeField]
+    AudioClip _damaged;
+    [SerializeField]
+    AudioClip _getItem;
 
     float _elapsedTimeForShooting = 0;
     bool _hit = false;
@@ -105,7 +109,11 @@ public class Player : MonoBehaviour
             StartCoroutine(WaitAndBack());
             _gameController.PlayerIsHit();
 
-            _audioSource.Play();
+            _audioSource.PlayOneShot(_damaged);
+        }
+        else if (other.tag == "Item")
+        {
+            _audioSource.PlayOneShot(_getItem);
         }
     }
 

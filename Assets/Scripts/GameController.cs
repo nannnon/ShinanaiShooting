@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _enemy4Prefab;
     [SerializeField]
+    GameObject _enemy5Prefab;
+    [SerializeField]
     GameObject _bossPrefab;
     [SerializeField]
     GameObject _result;
@@ -89,6 +91,11 @@ public class GameController : MonoBehaviour
                 case 4:
                     ed.enemyType = _enemy4Prefab;
                     break;
+                case 5:
+                    ed.enemyType = _enemy5Prefab;
+                    break;
+                default:
+                    throw new Exception("Not found");
             }
 
             ed.appearTime = float.Parse(items[1]);
