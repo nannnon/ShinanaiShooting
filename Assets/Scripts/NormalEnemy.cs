@@ -21,6 +21,7 @@ public enum ShootPattern
     Straight,
     Random,
     ToPlayer,
+    AllDirections,
 }
 
  public struct NormalEnemyData
@@ -262,6 +263,16 @@ public class NormalEnemy : Enemy
                 float theta = Mathf.Atan2(delta.z, delta.x);
                 Vector3 vel = new Vector3(_normalEnemyData.bulletSpeed * Mathf.Cos(theta), 0, _normalEnemyData.bulletSpeed * Mathf.Sin(theta));
                 GenerateBullet(Vector3.zero, vel);
+            }
+            else if (_normalEnemyData.shootPattern == ShootPattern.AllDirections)
+            {
+                const int bulletsNun = 10;
+                for (int i = 0; i < bulletsNun; ++i)
+                {
+                    float theta = i * 2 * Mathf.PI / bulletsNun;
+                    Vector3 vel = new Vector3(_normalEnemyData.bulletSpeed * Mathf.Cos(theta), 0, _normalEnemyData.bulletSpeed * Mathf.Sin(theta));
+                    GenerateBullet(Vector3.zero, vel);
+                }
             }
 
             _timeForShooting = 0;

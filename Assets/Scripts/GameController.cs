@@ -19,6 +19,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject _enemy3Prefab;
     [SerializeField]
+    GameObject _enemy4Prefab;
+    [SerializeField]
     GameObject _bossPrefab;
     [SerializeField]
     GameObject _result;
@@ -83,6 +85,9 @@ public class GameController : MonoBehaviour
                     break;
                 case 3:
                     ed.enemyType = _enemy3Prefab;
+                    break;
+                case 4:
+                    ed.enemyType = _enemy4Prefab;
                     break;
             }
 
