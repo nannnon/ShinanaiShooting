@@ -62,7 +62,10 @@ public abstract class Enemy : MonoBehaviour
     {
         if (other.tag == "Player" || other.tag == "PlayerBullet")
         {
-            _audioSource.Play();
+            if (_audioSource.isActiveAndEnabled)
+            {
+                _audioSource.Play();
+            }
             Damaged(1);
         }
     }
