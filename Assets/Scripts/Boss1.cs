@@ -3,43 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Boss1 : Enemy
+public class Boss1 : Boss
 {
-    [SerializeField]
-    GameObject _hpBarPrefab;
-    [SerializeField]
-    GameObject _cautionPrefab;
-    [SerializeField]
-    GameObject _winPrefab;
-
-    int _maxHP;
     float _thetaForShooting = Mathf.PI * 5 / 4;
-    Slider _hpBarSlider;
-
-    new void Start()
-    {
-        base.Start();
-
-        // HPバーをインスタン化
-        GameObject canvas = GameObject.Find("Canvas");
-        GameObject go = Instantiate(_hpBarPrefab, canvas.transform);
-        _hpBarSlider = go.GetComponent<Slider>();
-
-        // Cautionを表示
-        Instantiate(_cautionPrefab);
-    }
 
     new void Update()
     {
         base.Update();
         Move();
         ShootBullet();
-    }
-
-    public new void Set(Vector3 position, int hp, int score)
-    {
-        base.Set(position, hp, score);
-        _maxHP = hp;
     }
 
     void Move()
@@ -122,24 +94,6 @@ public class Boss1 : Enemy
             }
 
             _timeForShooting = 0;
-        }
-    }
-
-    protected override void Damaged2(int damage)
-    {
-        _hp -= damage;
-        _hpBarSlider.value = (float)_hp / (float)_maxHP;
-
-        if (_hp <= 0)
-        {
-            Destroy(gameObject);
-            _gameController.EnemyIsDestroyed(_score);
-
-            MakeExplosion(transform.position + new Vector3(0.3f, 0, 0));
-            MakeExplosion(transform.position + new Vector3(-0.3f, 0, 0.1f));
-            MakeExplosion(transform.position + new Vector3(-0.2f, 0, -0.2f));
-
-            Instantiate(_winPrefab);
         }
     }
 }

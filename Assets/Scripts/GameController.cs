@@ -134,7 +134,7 @@ public class GameController : MonoBehaviour
 
                 if (ed.isBoss)
                 {
-                    Boss1 b = go.GetComponent<Boss1>();
+                    Boss b = go.GetComponent<Boss>();
                     b.Set(ed.position, ed.hp, ed.score);
                 }
                 else
