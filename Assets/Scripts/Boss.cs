@@ -15,7 +15,7 @@ public class Boss : Enemy
     int _maxHP;
     Slider _hpBarSlider;
 
-    new void Start()
+    protected new void Start()
     {
         base.Start();
 
