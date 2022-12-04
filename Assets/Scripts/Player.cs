@@ -138,20 +138,19 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (_hit)
+        if (!_hit)
         {
-            return;
+            if (other.tag == "Enemy" || other.tag == "EnemyBullet")
+            {
+                _hit = true;
+                StartCoroutine(WaitAndBack());
+                _gameController.PlayerIsHit();
+
+                _audioSource.PlayOneShot(_damaged);
+            }
         }
 
-        if (other.tag == "Enemy" || other.tag == "EnemyBullet")
-        {
-            _hit = true;
-            StartCoroutine(WaitAndBack());
-            _gameController.PlayerIsHit();
-
-            _audioSource.PlayOneShot(_damaged);
-        }
-        else if (other.tag == "Item")
+        if (other.tag == "Item")
         {
             switch (s_powerUpStatus)
             {
