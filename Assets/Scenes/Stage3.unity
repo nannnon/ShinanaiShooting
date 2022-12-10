@@ -877,7 +877,7 @@ PrefabInstance:
     - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: _bossPrefab
       value: 
-      objectReference: {fileID: 6008845384852284223, guid: 511e0be6291504399b01c37af53fc827, type: 3}
+      objectReference: {fileID: 6008845384852284223, guid: b0b557492cb744b47a9187e22a6827bd, type: 3}
     - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: _enemy4Prefab
       value: 
@@ -888,7 +888,7 @@ PrefabInstance:
       objectReference: {fileID: 7986487318214287011, guid: 13e77105d780f4f4489e61c70cadf324, type: 3}
     - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: _nextStageName
-      value: Stage3
+      value: AllClear
       objectReference: {fileID: 0}
     - target: {fileID: 2258746268011769257, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: m_RootOrder
