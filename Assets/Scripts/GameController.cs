@@ -179,18 +179,36 @@ public class GameController : MonoBehaviour
         int hitPenaltyScore = _playerHitCounter * -3;
         resultText.text += "被弾によるスコア減少：" + hitPenaltyScore + "<br>";
 
-        int bombBonusScore = _player.GetComponent<Player>().GetBombsNum() * 10;
+        int bombBonusScore = _player.GetComponent<Player>().GetBombsNum() * 5;
         resultText.text += "ボム残弾によるスコア増加：" + bombBonusScore + "<br>";
 
         int finalScore = _score + hitPenaltyScore + bombBonusScore;
         resultText.text += "最終スコア：" + finalScore + "<br>";
 
+        int low = 0, high = 0;
+        String sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (sceneName == "Stage1")
+        {
+            low = 30;
+            high = 50;
+        }
+        else if (sceneName == "Stage2")
+        {
+            low = 50;
+            high = 70;
+        }
+        else if (sceneName == "Stage3")
+        {
+            low = 92;
+            high = 112;
+        }
+
         String eval = "";
-        if (finalScore <= 20)
+        if (finalScore <= low)
         {
             eval = "残念な感じ";
         }
-        else if (finalScore <= 60)
+        else if (finalScore <= high)
         {
             eval = "良い感じ";
         }
@@ -200,7 +218,8 @@ public class GameController : MonoBehaviour
         }
         resultText.text += "評価：" + eval + "<br>";
 
-        if (_nextStageName == "Title")
+
+        if (sceneName == "Stage3")
         {
             resultText.text += "<br>";
             resultText.text += "全ステージクリア！！！<br>";
