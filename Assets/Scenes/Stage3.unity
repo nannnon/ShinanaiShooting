@@ -888,7 +888,7 @@ PrefabInstance:
       objectReference: {fileID: 7986487318214287011, guid: 13e77105d780f4f4489e61c70cadf324, type: 3}
     - target: {fileID: 2258746268011769256, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: _nextStageName
-      value: AllClear
+      value: Title
       objectReference: {fileID: 0}
     - target: {fileID: 2258746268011769257, guid: 668b332bd8b16494d85b91d5c72ee347, type: 3}
       propertyPath: m_RootOrder
@@ -1020,6 +1020,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5879527237163352793, guid: 2177a1fe6136c4c11bdc0cab4df9c733, type: 3}
+      propertyPath: m_text
+      value: "\u30BF\u30A4\u30C8\u30EB\u3078"
+      objectReference: {fileID: 0}
     - target: {fileID: 5879527237174263142, guid: 2177a1fe6136c4c11bdc0cab4df9c733, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -1106,6 +1110,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5879527237174263162, guid: 2177a1fe6136c4c11bdc0cab4df9c733, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5879527237225495529, guid: 2177a1fe6136c4c11bdc0cab4df9c733, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5879527238806080256, guid: 2177a1fe6136c4c11bdc0cab4df9c733, type: 3}
