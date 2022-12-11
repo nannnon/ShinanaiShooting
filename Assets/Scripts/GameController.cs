@@ -198,7 +198,13 @@ public class GameController : MonoBehaviour
         {
             eval = "素晴らしい";
         }
-        resultText.text += "評価：" + eval;
+        resultText.text += "評価：" + eval + "<br>";
+
+        if (_nextStageName == "Title")
+        {
+            resultText.text += "<br>";
+            resultText.text += "全ステージクリア！！！<br>";
+        }
     }
 
     public void LoadNextScene()
